@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+	<Resource 
+		name="jdbc/webstudy09" 
+		auth="Container"
+		type="javax.sql.DataSource" 
+		driverClassName="oracle.jdbc.OracleDriver"
+		url="jdbc:oracle:thin:@127.0.0.1:1521:orcl" 
+		username="jsp_study"
+		password="rootroot" 
+		maxTotal="20" 
+		maxIdle="10" 
+		maxWaitMillis="-1" />
+</Context>
+
+
+
