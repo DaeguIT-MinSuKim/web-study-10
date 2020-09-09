@@ -1,5 +1,6 @@
 DROP TABLE MEMBER;
 -- MEMBER TABLE 생성
+
 CREATE TABLE member(
 	name varchar2(20),
 	userid varchar2(10),
