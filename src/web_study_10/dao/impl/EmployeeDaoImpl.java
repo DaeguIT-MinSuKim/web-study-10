@@ -156,4 +156,36 @@ public class EmployeeDaoImpl implements EmployeeDao {
         }
         return 1;
     }
+
+    @Override
+    public int updateEmployee(Employee emp) {
+        String sql = "update EMPLOYEE "
+                +    "   SET EMP_NAME=?, TNO=?, MANAGER=?, SALARY=?, DNO=?, EMAIL=?, PASSWD=?, TEL=? "
+                   + "WHERE EMP_NO = ?";
+        try (Connection con = JndiDS.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, emp.getEmpName());
+            pstmt.setInt(2, emp.getTitle().getTitleNo());
+            pstmt.setInt(3, emp.getManager().getEmpNo());
+            pstmt.setInt(4, emp.getSalary());
+            pstmt.setInt(5, emp.getDept().getDeptNo());
+            pstmt.setString(6, emp.getEmail());
+            pstmt.setString(7, emp.getPasswd());
+            pstmt.setString(8, emp.getTel());
+            pstmt.setInt(9, emp.getEmpNo());
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CustomSQLException(e);
+        }
+    }
+
+    @Override
+    public int deleteEmployee(Employee emp) {
+        String sql = "DELETE FROM EMPLOYEE WHERE EMP_NO = ?";
+        try (Connection con = JndiDS.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, emp.getEmpNo());
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CustomSQLException(e);
+        }
+    }
 }

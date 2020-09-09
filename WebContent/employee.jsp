@@ -48,7 +48,7 @@ $(function(){
             $('select').each(function(index, value){
                 $(this).prop('disabled', false);
             });
-           /* status = true; */
+            status = true;
         }else{
             if ($('#passwd').val() != $('#repasswd').val()){
                 alert("비밀번호가 틀립니다.");
@@ -60,7 +60,7 @@ $(function(){
             
             //validCheck() 추가하기
             
-            var newEmp = {
+            var updateEmp = {
                     empNo : $('#empNo').val(),
                     empName : $('#empName').val(),
                     title:{titleNo:$('#title').val()},
@@ -73,17 +73,17 @@ $(function(){
                     passwd:$('#passwd').val()
                 };
          //작업하기
-            /* $.ajax({
+             $.ajax({
                 type:"post",
-                url:"TitleModifyHandler",
-                data:JSON.stringify(title),
+                url:"EmpModifyHandler",
+                data:JSON.stringify(updateEmp),
                 success: function(data){
                     alert(data);
                     if (data == 1){
-                        window.location.href = "TitleListHandler";
+                        window.location.href = "EmpListHandler";
                     }
                 }
-            }); */
+            }); 
         }
     });
     
@@ -161,10 +161,26 @@ $(function(){
 		});
 	});
 	
-	$('#cancel').on("click", function(){
+	$('#list').on("click", function(){
 	    window.location.href = "EmpListHandler";
 	});
 	
+	$('#delete').on("click", function(){
+	    alert("삭제");
+        var delEmp ={empNo:$('#empNo').val()}
+        $.ajax({
+            type: "get", 
+            url:"EmpDeleteHandler",
+            data:delEmp,
+            success: function(data){
+                alert(data);// 1이면 삭제 0이면 실패
+                if (data==1){
+                    alert("삭제 되었습니다.");
+                    window.location.href = "EmpListHandler";
+                }
+            }
+        });
+	});
 });
 </script>
 </head>

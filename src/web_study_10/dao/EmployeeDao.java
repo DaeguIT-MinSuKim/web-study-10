@@ -11,4 +11,6 @@ public interface EmployeeDao {
     List<Employee> selectManagerByDno(Department dept);
     Employee selectEmployeeByNo(Employee emp);
     int idDupCheck(int empNo);
+    int updateEmployee(Employee emp);
+    int deleteEmployee(Employee emp);
 }

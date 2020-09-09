@@ -12,15 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import web_study_10.dto.Employee;
 import web_study_10.service.EmpService;
 
-@WebServlet("/EmpGetHandler")
-public class EmpGetHandler extends HttpServlet {
+@WebServlet("/EmpDeleteHandler")
+public class EmpDeleteHandler extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private EmpService service;
+    private EmpService service;
 
     public void init(ServletConfig config) throws ServletException {
         service = new EmpService();
     }
     
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    process(request, response);
 	}
@@ -34,12 +35,13 @@ public class EmpGetHandler extends HttpServlet {
         if (request.getMethod().equalsIgnoreCase("GET")) {
             System.out.println("GET");
             int empNo = Integer.parseInt(request.getParameter("empNo").trim());
-            Employee emp = service.getEmployee(new Employee(empNo));
-            System.out.println("emp > "  + emp);
-            request.setAttribute("emp", emp);
-            request.getRequestDispatcher("employee.jsp").forward(request, response);
+            System.out.println("empNo > " + empNo);
+            
+            int res = service.removeEmployee(new Employee(empNo));
+            response.getWriter().print(res);
         }else {
             System.out.println("POST");
+           
         }
     }
 }

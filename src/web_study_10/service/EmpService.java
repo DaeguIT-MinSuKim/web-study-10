@@ -29,4 +29,12 @@ public class EmpService {
     public Employee getEmployee(Employee emp) {
         return dao.selectEmployeeByNo(emp);
     }
+    
+    public int removeEmployee(Employee emp) {
+        return dao.deleteEmployee(emp);
+    }
+    
+    public int modifyEmployee(Employee emp) {
+        return dao.updateEmployee(emp);
+    }
 }
