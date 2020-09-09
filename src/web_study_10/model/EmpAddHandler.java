@@ -12,18 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import web_study_10.dto.Title;
-import web_study_10.service.TitleService;
+import web_study_10.dto.Employee;
+import web_study_10.service.EmpService;
 
-@WebServlet("/TitleAddHandler")
-public class TitleAddHandler extends HttpServlet {
+@WebServlet("/EmpAddHandler")
+public class EmpAddHandler extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private TitleService service;
+    
+    private EmpService service;
 
     public void init(ServletConfig config) throws ServletException {
-        service = new TitleService();
+        service = new EmpService();
     }
-
+    
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         process(request, response);
@@ -38,21 +39,13 @@ public class TitleAddHandler extends HttpServlet {
             throws ServletException, IOException {
         if (request.getMethod().equalsIgnoreCase("GET")) {
             System.out.println("GET");
-            int nextNo = service.getNextNo();
-            System.out.println("nextNo > " + nextNo);
-            
-            response.getWriter().print(nextNo);
-            /*request.setAttribute("nextNo", nextNo);
-            request.getRequestDispatcher("titleAdd.jsp").forward(request, response);*/
         }else {
             System.out.println("POST");
-            //{titleNo:6, titleName:"인턴"} => Title객체
             Gson gson = new Gson();
-            Title newTitle = gson.fromJson(new InputStreamReader(request.getInputStream(), "UTF-8"), Title.class);
-            System.out.println(newTitle);
+            Employee emp = gson.fromJson(new InputStreamReader(request.getInputStream(), "UTF-8"), Employee.class);
+            System.out.println(emp);
             
-            int res = service.addTitle(newTitle);
-            
+            int res = service.addEmployee(emp);            
             response.getWriter().print(res);
         }
     }
