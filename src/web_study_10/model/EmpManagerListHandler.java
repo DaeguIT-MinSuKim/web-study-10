@@ -57,6 +57,20 @@ public class EmpManagerListHandler extends HttpServlet {
             pw.flush();
         } else {
             System.out.println("POST");
+            int deptNo = Integer.parseInt(request.getParameter("deptNo"));
+            System.out.println("deptNo" + deptNo);
+            List<Employee> list = service.getManagerListByDno(new Department(deptNo));
+            
+            Gson gson = new Gson();
+            String result = gson.toJson(list, new TypeToken<List<Employee>>(){}.getType());
+            System.out.println(result);
+                    
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+            
+            PrintWriter pw = response.getWriter();
+            pw.print(result);
+            pw.flush();
         }
     }
 }

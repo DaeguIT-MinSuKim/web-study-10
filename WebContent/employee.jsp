@@ -36,6 +36,57 @@ src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script
 <script>
 
 $(function(){
+    var status = false;
+    $('#modify').on("click", function(){
+        alert("수정");
+        if (!status){
+            $('input').each(function(index, value){
+                $(this).attr("readonly", false);
+                console.log($(this));
+            });
+            $('#empNo').attr("readonly", true);
+            $('select').each(function(index, value){
+                $(this).prop('disabled', false);
+            });
+           /* status = true; */
+        }else{
+            if ($('#passwd').val() != $('#repasswd').val()){
+                alert("비밀번호가 틀립니다.");
+                $('#passwd').val('');
+                $('#repasswd').val('');
+                $('#passwd').focus();
+                return;
+            }
+            
+            //validCheck() 추가하기
+            
+            var newEmp = {
+                    empNo : $('#empNo').val(),
+                    empName : $('#empName').val(),
+                    title:{titleNo:$('#title').val()},
+                    manager:{empNo:$('#manager').val()},
+                    salary:$('#salary').val(),
+                    dept:{deptNo:$('#dept').val()},
+                    regDate:$('#regDate').val(),
+                    email:$('#email').val(),
+                    tel:$('#tel').val(),
+                    passwd:$('#passwd').val()
+                };
+         //작업하기
+            /* $.ajax({
+                type:"post",
+                url:"TitleModifyHandler",
+                data:JSON.stringify(title),
+                success: function(data){
+                    alert(data);
+                    if (data == 1){
+                        window.location.href = "TitleListHandler";
+                    }
+                }
+            }); */
+        }
+    });
+    
 	$.post("TitleListHandler", function(json){
 	    var titleSelected = ${emp.title.titleNo};
 	     var dataLength = json.length;
@@ -70,28 +121,30 @@ $(function(){
 		}
 	});
 
-	var isEmpNoCheck = false;
-	$('#empNoDupCheck').on("click", function(){
-	    alert($('#empNo').val());
-	    var emp = {empNo : $('#empNo').val()};
-	    $.post("DuplicateEmpNoCheckHandler", emp, function(data){
-	        if (data == 1){
-	            alert("사용가능한 사원번호");
-	            isEmpNoCheck = true;
-	        }else{
-	            alert("사원번호 중복");
-	            $('#empNo').val('');
-	            $('#empNo').focus();
-	        }
-	    });
+	$.post("EmpManagerListHandler", {deptNo: ${emp.dept.deptNo} }, function(json){
+	  	var dataLength = json.length;
+	  	var managerno = ${emp.manager.empNo};
+		if (dataLength >= 1) {
+		    var sCont = "<option value='' disabled selected hidden>직속상사를 선택하세요...</option>";
+		    for (i = 0; i < dataLength; i++) {
+		        sCont += "<option value=" + json[i].empNo ; 
+ 		        if ( managerno == json[i].empNo ){
+		            sCont += " selected ";
+		        } 
+		        sCont += " >" + json[i].empName + "</>";
+		    }
+		    $("#manager").append(sCont);
+		}
 	});
+
 	
 	$('#dept').on("change", function(){
-		/* alert($('#dept').val()); */ 
+		alert($('#dept').val()); 
 		var selectedManagerd = ${emp.manager.empNo};
 		
 		$("#manager").empty();
 		var dept = {deptNo : $('#dept').val()};
+		
 		$.get("EmpManagerListHandler", dept, function(json){
 		    var dataLength = json.length;
 	        if ( dataLength >=1 ){
@@ -112,46 +165,6 @@ $(function(){
 	    window.location.href = "EmpListHandler";
 	});
 	
-    $('#add').on("click", function() {
-        if ($('#passwd').val() != $('#repasswd').val()){
-            alert("비밀번호가 틀립니다.");
-            $('#passwd').val('');
-            $('#repasswd').val('');
-            $('#passwd').focus();
-            return;
-        }
-        if (!isEmpNoCheck){
-            alert("중복체크 하세요");
-            return;
-        }
-        
-        //validCheck() 추가하기
-        
-        var newEmp = {
-            empNo : $('#empNo').val(),
-            empName : $('#empName').val(),
-            title:{titleNo:$('#title').val()},
-            manager:{empNo:$('#manager').val()},
-            salary:$('#salary').val(),
-            dept:{deptNo:$('#dept').val()},
-            regDate:$('#regDate').val(),
-            email:$('#email').val(),
-            tel:$('#tel').val(),
-            passwd:$('#passwd').val()
-        };
-
-        $.ajax({
-            type : "post",
-            url : "EmpAddHandler",
-            cache : false,
-            data : JSON.stringify(newEmp),
-            complete : function(data) {
-                alert("추가되었습니다." + data);
-                window.location.href = "EmpListHandler";
-            }
-        });
-    });
-
 });
 </script>
 </head>
@@ -161,44 +174,43 @@ $(function(){
 		<ul>
 			<li>
 				<label for="empNo">사원 번호</label>
-				<input id="empNo" type="number" name="empNo" value="${emp.empNo}">
-				<button id="empNoDupCheck" >중복체크</button>
+				<input id="empNo" type="number" name="empNo" value="${emp.empNo}" readonly>
 			</li>
 			<li>
 				<label for="empName">사원명</label>
-				<input id="empName" type="text" name="empName" value="${emp.empName}">
+				<input id="empName" type="text" name="empName" value="${emp.empName}" readonly>
 			</li>
 			<li>
 				<label for="dept">부서</label>
-				<select id="dept"></select>
+				<select id="dept" disabled></select>
 			</li>
 			<li>
 				<label for="manager">직속상사</label>
-				<select id="manager"></select>
+				<select id="manager" disabled></select>
 			</li>
 			<li>
 				<label for="title">직책</label>
-				<select id="title"></select>
+				<select id="title" disabled></select>
 			</li>
 			<li>
 				<label for="salary">급여</label>
-				<input id="salary" type="number" name="salary" value="${emp.salary}">
+				<input id="salary" type="number" name="salary" value="${emp.salary}" readonly>
 			</li>
 			<li>
 				<label for="regDate">입사일</label>
-				<input id="regDate" type="date" name="regDate" value="<fmt:formatDate value='${emp.regDate}' pattern='yyyy-MM-dd' />">
+				<input id="regDate" type="date" name="regDate" value="<fmt:formatDate value='${emp.regDate}' pattern='yyyy-MM-dd' />" readonly>
 			</li>
 			<li>
 				<label for="email">이메일</label>
-				<input id="email" type="email" name="email" value="${emp.email}">
+				<input id="email" type="email" name="email" value="${emp.email}" readonly>
 			</li>
 			<li>
 				<label for="tel">연락처</label>
-				<input id="tel" type="tel" name="tel" value="${emp.tel}">
+				<input id="tel" type="tel" name="tel" value="${emp.tel}" readonly>
 			</li>
 			<li>
 				<label for="passwd">비밀번호</label>
-				<input id="passwd" type="password" name="passwd" value="${emp.passwd}">
+				<input id="passwd" type="password" name="passwd" >
 			</li>
 			<li>
 				<label for="repasswd">비밀번호 확인</label>
