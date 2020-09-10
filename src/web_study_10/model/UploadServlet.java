@@ -30,7 +30,8 @@ public class UploadServlet extends HttpServlet {
         System.out.println("서버상의 실제 디렉토리 :");
         System.out.println(uploadFilePath);
         try {
-            MultipartRequest multi = new MultipartRequest(request, // request 객체
+            MultipartRequest multi = new MultipartRequest(
+                    request, // request 객체
                     uploadFilePath, // 서버상의 실제 디렉토리
                     uploadFileSizeLimit, // 최대 업로드 파일 크기
                     encType, // 인코딩 방법
